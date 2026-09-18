@@ -24,6 +24,17 @@ public partial class SettingsViewModel
         };
     }
 
+    public string GetSkinPackDisplayName(string skinId)
+    {
+        return SkinPackCatalog.NormalizeSelectedSkinId(skinId) switch
+        {
+            SkinPackCatalog.DarkGlassId => _localizationService.T("Settings.SkinPack.DarkGlass"),
+            SkinPackCatalog.LightMinimalId => _localizationService.T("Settings.SkinPack.LightMinimal"),
+            SkinPackCatalog.HighContrastId => _localizationService.T("Settings.SkinPack.HighContrast"),
+            _ => _localizationService.T("Settings.SkinPack.Custom")
+        };
+    }
+
     public string GetTrayIconStyleDisplayName(string style)
     {
         return style switch
