@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <UserControl
     x:Class="DeskBox.Views.SettingsSections.AppearanceSettingsSection"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -18,6 +18,19 @@
     <StackPanel Style="{StaticResource SectionPanelStyle}">
         <TextBlock Style="{StaticResource SectionTitleTextStyle}" svc:Localized.Key="Settings.Section.Appearance" />
         <StackPanel Margin="0,8,0,0" Spacing="4">
+            <toolkit:SettingsCard
+                HorizontalContentAlignment="Right"
+                svc:Localized.DescriptionKey="Settings.SkinPack.Description"
+                svc:Localized.HeaderKey="Settings.SkinPack.Title">
+                <toolkit:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE790;" />
+                </toolkit:SettingsCard.HeaderIcon>
+                <ComboBox
+                    MinWidth="{StaticResource SettingsControlMinWidth}"
+                    ItemsSource="{Binding AvailableSkinPackOptions}"
+                    controls:SettingsComboBox.Value="{Binding SelectedSkinId, Mode=TwoWay}" />
+            </toolkit:SettingsCard>
+
             <toolkit:SettingsCard
                 HorizontalContentAlignment="Right"
                 svc:Localized.DescriptionKey="Settings.Theme.Description"
