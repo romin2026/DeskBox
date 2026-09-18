@@ -27,7 +27,27 @@ Official DeskBox remains the daily driver until a fork build is ready.
 Compiling WinUI 3 / .NET 10 Native AOT requires Visual Studio workloads on Windows.
 Do **not** install those until the user explicitly approves a tool list.
 
+## Landed (v1 skin packs)
+- `SkinPack` model + `SkinPackCatalog` built-in registry (`DarkGlass`, `LightMinimal`, `HighContrast`).
+- Persisted `AppSettings.SelectedSkinId` (additive; defaults to `Custom`).
+- Appearance settings UI combo (zh-CN + en-US strings) applies a pack by writing existing appearance fields (theme, tray icon, accent, material, opacity, intensity, corners, border, density, chrome).
+- Editing any covered appearance field re-resolves the selection; mismatched bundles become `Custom`.
+- Unit tests in `tests/DeskBox.Tests/SkinPackCatalogTests.cs`.
+
+### Built-in packs
+| Id | Intent |
+| --- | --- |
+| `DarkGlass` | Dark theme, acrylic, translucent, round corners |
+| `LightMinimal` | Light theme, mica, thin border, compact density |
+| `HighContrast` | Solid material, thick accent border, relaxed density, strong custom accent |
+
+## Still stubbed
+- Custom UI fonts (system font picker for body/title).
+- UI / tray / title icon resource packs.
+- Per-extension file-type icon packs + cache (v1.5).
+- Skin pack import/export (v1.5).
+
 ## Next
-1. Collect visual references for 2–3 default skins.
-2. Map settings model hooks (`AppearanceOptions`, widget chrome, icon cache).
-3. After consent: install build tools → compile → side-by-side test with official DeskBox.
+1. Side-by-side visual QA once a Windows build toolchain is approved.
+2. Font picker + chrome icon pack hooks.
+3. File-type icon pack pipeline after icon cache design.
