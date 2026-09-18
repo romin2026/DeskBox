@@ -11,10 +11,10 @@ public partial class SettingsViewModel
     public IReadOnlyList<SettingsOption> AvailableSkinPackOptions =>
         WrapOptions(
         [
-            new(SkinPackCatalog.DarkGlassId, GetSkinPackDisplayName(SkinPackCatalog.DarkGlassId)),
-            new(SkinPackCatalog.LightMinimalId, GetSkinPackDisplayName(SkinPackCatalog.LightMinimalId)),
-            new(SkinPackCatalog.HighContrastId, GetSkinPackDisplayName(SkinPackCatalog.HighContrastId)),
-            new(SkinPackCatalog.CustomId, GetSkinPackDisplayName(SkinPackCatalog.CustomId))
+            new(SkinPackCatalog.DarkGlassId, "深色玻璃 / Dark Glass"),
+            new(SkinPackCatalog.LightMinimalId, "浅色极简 / Light Minimal"),
+            new(SkinPackCatalog.HighContrastId, "高对比 / High Contrast"),
+            new(SkinPackCatalog.CustomId, "自定义 / Custom")
         ]);
 
     public IReadOnlyList<SettingsOption> AvailableTrayIconStyleOptions =>
