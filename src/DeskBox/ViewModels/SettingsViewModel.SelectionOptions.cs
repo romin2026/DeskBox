@@ -8,6 +8,15 @@ public partial class SettingsViewModel
     public IReadOnlyList<SettingsOption> AvailableThemeOptions =>
         CreateSelectionOptions(AvailableThemes, AvailableThemeDisplayNames);
 
+    public IReadOnlyList<SettingsOption> AvailableSkinPackOptions =>
+        WrapOptions(
+        [
+            new(SkinPackCatalog.DarkGlassId, "深色玻璃 / Dark Glass"),
+            new(SkinPackCatalog.LightMinimalId, "浅色极简 / Light Minimal"),
+            new(SkinPackCatalog.HighContrastId, "高对比 / High Contrast"),
+            new(SkinPackCatalog.CustomId, "自定义 / Custom")
+        ]);
+
     public IReadOnlyList<SettingsOption> AvailableTrayIconStyleOptions =>
         CreateSelectionOptions(AvailableTrayIconStyles, AvailableTrayIconStyleDisplayNames);
 
@@ -219,6 +228,7 @@ public partial class SettingsViewModel
     private void NotifySelectionOptionsChanged()
     {
         OnPropertyChanged(nameof(AvailableThemeOptions));
+        OnPropertyChanged(nameof(AvailableSkinPackOptions));
         OnPropertyChanged(nameof(AvailableAccentColorSourceOptions));
         OnPropertyChanged(nameof(AvailableFileOpenMethodOptions));
         OnPropertyChanged(nameof(AvailableFileWidgetFolderOpenBehaviorOptions));

@@ -15,9 +15,9 @@ public sealed class CoreSettingsSlice
     /// </summary>
     public string TrayIconStyle { get; set; } = "Colorful";
 
-/// <summary>
-/// Display language. Valid values: <c>"System"</c>, <c>"zh-CN"</c>, <c>"zh-TW"</c>, <c>"en-US"</c>, <c>"ja-JP"</c>, <c>"de-DE"</c>, <c>"pt-BR"</c>, <c>"hi-IN"</c>, <c>"es-ES"</c>, <c>"fr-FR"</c>, <c>"ar-SA"</c>, <c>"bn-BD"</c>, <c>"ru-RU"</c>.
-/// </summary>
+    /// <summary>
+    /// Display language. Valid values: <c>"System"</c>, <c>"zh-CN"</c>, <c>"zh-TW"</c>, <c>"en-US"</c>, <c>"ja-JP"</c>, <c>"de-DE"</c>, <c>"pt-BR"</c>, <c>"hi-IN"</c>, <c>"es-ES"</c>, <c>"fr-FR"</c>, <c>"ar-SA"</c>, <c>"bn-BD"</c>, <c>"ru-RU"</c>.
+    /// </summary>
     public string Language { get; set; } = "System";
 
     /// <summary>
@@ -29,6 +29,13 @@ public sealed class CoreSettingsSlice
     /// Custom accent color in hex format such as <c>#0078D4</c>.
     /// </summary>
     public string CustomAccentColor { get; set; } = "#0078D4";
+
+    /// <summary>
+    /// Selected widget skin pack id. Built-in values:
+    /// <c>DarkGlass</c>, <c>LightMinimal</c>, <c>HighContrast</c>, or <c>Custom</c>
+    /// when the user has mixed individual appearance settings.
+    /// </summary>
+    public string SelectedSkinId { get; set; } = "Custom";
 
     /// <summary>Whether DeskBox should launch automatically at Windows startup.</summary>
     public bool AutoStart { get; set; } = true;
