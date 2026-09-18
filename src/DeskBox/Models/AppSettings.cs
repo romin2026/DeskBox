@@ -8,7 +8,7 @@ namespace DeskBox.Models;
 /// properties below are the serialization facade and the legacy access
 /// surface. Declaration order here defines the on-disk member order.
 /// </summary>
-public class AppSettings
+public partial class AppSettings
 {
     /// <summary>
     /// Settings schema version for migration purposes.
@@ -129,5 +129,132 @@ public class AppSettings
     /// <inheritdoc cref="CoreSettingsSlice.LastUpdateCheckAt"/>
     public DateTimeOffset? LastUpdateCheckAt { get => Core.LastUpdateCheckAt; set => Core.LastUpdateCheckAt = value; }
 
-    // NOTE: truncated restore - SEE BLOCKER
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureEnabled"/>
+    public bool QuickCaptureEnabled { get => QuickCapture.QuickCaptureEnabled; set => QuickCapture.QuickCaptureEnabled = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoEnabled"/>
+    public bool TodoEnabled { get => Todo.TodoEnabled; set => Todo.TodoEnabled = value; }
+
+    /// <inheritdoc cref="WidgetLayoutSettingsSlice.FeatureWidgetEnabledStates"/>
+    public Dictionary<string, bool> FeatureWidgetEnabledStates { get => WidgetLayout.FeatureWidgetEnabledStates; set => WidgetLayout.FeatureWidgetEnabledStates = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureClipboardEnabled"/>
+    public bool QuickCaptureClipboardEnabled { get => QuickCapture.QuickCaptureClipboardEnabled; set => QuickCapture.QuickCaptureClipboardEnabled = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureImageClipboardEnabled"/>
+    public bool QuickCaptureImageClipboardEnabled { get => QuickCapture.QuickCaptureImageClipboardEnabled; set => QuickCapture.QuickCaptureImageClipboardEnabled = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureRecentLimit"/>
+    public int QuickCaptureRecentLimit { get => QuickCapture.QuickCaptureRecentLimit; set => QuickCapture.QuickCaptureRecentLimit = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureShowCreatedTime"/>
+    public bool QuickCaptureShowCreatedTime { get => QuickCapture.QuickCaptureShowCreatedTime; set => QuickCapture.QuickCaptureShowCreatedTime = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureItemPreviewLineCount"/>
+    public int QuickCaptureItemPreviewLineCount { get => QuickCapture.QuickCaptureItemPreviewLineCount; set => QuickCapture.QuickCaptureItemPreviewLineCount = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureListTextSize"/>
+    public double QuickCaptureListTextSize { get => QuickCapture.QuickCaptureListTextSize; set => QuickCapture.QuickCaptureListTextSize = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureContentTextSize"/>
+    public double QuickCaptureContentTextSize { get => QuickCapture.QuickCaptureContentTextSize; set => QuickCapture.QuickCaptureContentTextSize = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureEditorEnterBehavior"/>
+    public string QuickCaptureEditorEnterBehavior { get => QuickCapture.QuickCaptureEditorEnterBehavior; set => QuickCapture.QuickCaptureEditorEnterBehavior = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureDefaultFormat"/>
+    public string QuickCaptureDefaultFormat { get => QuickCapture.QuickCaptureDefaultFormat; set => QuickCapture.QuickCaptureDefaultFormat = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureWideLayout"/>
+    public string QuickCaptureWideLayout { get => QuickCapture.QuickCaptureWideLayout; set => QuickCapture.QuickCaptureWideLayout = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureWideOpenMode"/>
+    public string QuickCaptureWideOpenMode { get => QuickCapture.QuickCaptureWideOpenMode; set => QuickCapture.QuickCaptureWideOpenMode = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureAllowRemoteImages"/>
+    public bool QuickCaptureAllowRemoteImages { get => QuickCapture.QuickCaptureAllowRemoteImages; set => QuickCapture.QuickCaptureAllowRemoteImages = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.AttachmentStorageMode"/>
+    public string AttachmentStorageMode { get => QuickCapture.AttachmentStorageMode; set => QuickCapture.AttachmentStorageMode = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureDefaultView"/>
+    public string QuickCaptureDefaultView { get => QuickCapture.QuickCaptureDefaultView; set => QuickCapture.QuickCaptureDefaultView = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureTabStyle"/>
+    public string QuickCaptureTabStyle { get => QuickCapture.QuickCaptureTabStyle; set => QuickCapture.QuickCaptureTabStyle = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureShowTabBar"/>
+    public bool QuickCaptureShowTabBar { get => QuickCapture.QuickCaptureShowTabBar; set => QuickCapture.QuickCaptureShowTabBar = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureShowRecordsTab"/>
+    public bool QuickCaptureShowRecordsTab { get => QuickCapture.QuickCaptureShowRecordsTab; set => QuickCapture.QuickCaptureShowRecordsTab = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureShowPinnedTab"/>
+    public bool QuickCaptureShowPinnedTab { get => QuickCapture.QuickCaptureShowPinnedTab; set => QuickCapture.QuickCaptureShowPinnedTab = value; }
+
+    /// <inheritdoc cref="QuickCaptureSettingsSlice.QuickCaptureShowRecentTab"/>
+    public bool QuickCaptureShowRecentTab { get => QuickCapture.QuickCaptureShowRecentTab; set => QuickCapture.QuickCaptureShowRecentTab = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoNewTaskPosition"/>
+    public string TodoNewTaskPosition { get => Todo.TodoNewTaskPosition; set => Todo.TodoNewTaskPosition = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoTabStyle"/>
+    public string TodoTabStyle { get => Todo.TodoTabStyle; set => Todo.TodoTabStyle = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoShowTabBar"/>
+    public bool TodoShowTabBar { get => Todo.TodoShowTabBar; set => Todo.TodoShowTabBar = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoShowAllTab"/>
+    public bool TodoShowAllTab { get => Todo.TodoShowAllTab; set => Todo.TodoShowAllTab = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoShowActiveTab"/>
+    public bool TodoShowActiveTab { get => Todo.TodoShowActiveTab; set => Todo.TodoShowActiveTab = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoShowTodayTab"/>
+    public bool TodoShowTodayTab { get => Todo.TodoShowTodayTab; set => Todo.TodoShowTodayTab = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoShowThisWeekTab"/>
+    public bool TodoShowThisWeekTab { get => Todo.TodoShowThisWeekTab; set => Todo.TodoShowThisWeekTab = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoShowThisMonthTab"/>
+    public bool TodoShowThisMonthTab { get => Todo.TodoShowThisMonthTab; set => Todo.TodoShowThisMonthTab = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoShowImportantTab"/>
+    public bool TodoShowImportantTab { get => Todo.TodoShowImportantTab; set => Todo.TodoShowImportantTab = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoShowCompletedTab"/>
+    public bool TodoShowCompletedTab { get => Todo.TodoShowCompletedTab; set => Todo.TodoShowCompletedTab = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoDefaultFilter"/>
+    public string TodoDefaultFilter { get => Todo.TodoDefaultFilter; set => Todo.TodoDefaultFilter = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoShowCompletedTasks"/>
+    public bool TodoShowCompletedTasks { get => Todo.TodoShowCompletedTasks; set => Todo.TodoShowCompletedTasks = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoItemPreviewLineCount"/>
+    public int TodoItemPreviewLineCount { get => Todo.TodoItemPreviewLineCount; set => Todo.TodoItemPreviewLineCount = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoListTextSize"/>
+    public double TodoListTextSize { get => Todo.TodoListTextSize; set => Todo.TodoListTextSize = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoContentTextSize"/>
+    public double TodoContentTextSize { get => Todo.TodoContentTextSize; set => Todo.TodoContentTextSize = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoEditorEnterBehavior"/>
+    public string TodoEditorEnterBehavior { get => Todo.TodoEditorEnterBehavior; set => Todo.TodoEditorEnterBehavior = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoShowFooterStats"/>
+    public bool TodoShowFooterStats { get => Todo.TodoShowFooterStats; set => Todo.TodoShowFooterStats = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoShowClearCompletedButton"/>
+    public bool TodoShowClearCompletedButton { get => Todo.TodoShowClearCompletedButton; set => Todo.TodoShowClearCompletedButton = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoReminderEnabled"/>
+    public bool TodoReminderEnabled { get => Todo.TodoReminderEnabled; set => Todo.TodoReminderEnabled = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoDefaultReminderOffsetMinutes"/>
+    public int TodoDefaultReminderOffsetMinutes { get => Todo.TodoDefaultReminderOffsetMinutes; set => Todo.TodoDefaultReminderOffsetMinutes = value; }
+
+    /// <inheritdoc cref="TodoSettingsSlice.TodoUseWideDetailPane"/>
+    public bool TodoUseWideDetailPane { get => Todo.TodoUseWideDetailPane; set => Todo.TodoUseWideDetailPane = value; }
 }
