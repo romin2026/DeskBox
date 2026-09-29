@@ -1,4 +1,5 @@
 using DeskBox.Helpers;
+using DeskBox.Platform;
 using Microsoft.UI.Xaml;
 using WinRT.Interop;
 using Windows.UI;
@@ -14,7 +15,7 @@ public sealed class ThemeService
     public const string AccentModeCustom = "Custom";
 
     private readonly SettingsService _settingsService;
-    private readonly List<Window> _trackedWindows = new();
+    private readonly WindowTrackingRegistry<Window> _trackedWindows = new();
     private readonly Windows.UI.ViewManagement.UISettings _uiSettings = new();
     private Microsoft.UI.Dispatching.DispatcherQueueTimer? _appearanceDebounceTimer;
 
@@ -28,7 +29,14 @@ public sealed class ThemeService
 
     private void OnColorValuesChanged(Windows.UI.ViewManagement.UISettings sender, object args)
     {
-        App.UiDispatcherQueue?.TryEnqueue(() =>
+        var dispatcherQueue = App.UiDispatcherQueue;
+        if (dispatcherQueue is null)
+        {
+            App.Log("[Theme] ColorValuesChanged dropped: UI dispatcher unavailable");
+            return;
+        }
+
+        dispatcherQueue.TryEnqueue(() =>
         {
             if (_appearanceDebounceTimer is null)
             {
@@ -142,17 +150,22 @@ public sealed class ThemeService
     }
 
     /// <summary>
-    /// Register a window so appearance changes are applied to it.
+    /// Register a window so appearance changes are applied to it. A window
+    /// leaves the registry only when its Closed event actually runs — a
+    /// cancelled close (hide-and-reuse) keeps it tracked.
     /// </summary>
     public void TrackWindow(Window window)
     {
-        if (_trackedWindows.Contains(window))
+        EnsureUiThread(nameof(TrackWindow));
+        if (!_trackedWindows.Track(window))
         {
             ApplyToWindow(window);
             return;
         }
 
-        _trackedWindows.Add(window);
+        App.LogVerbose(
+            $"[Theme] TrackWindow {window.GetType().Name} " +
+            $"tracked={_trackedWindows.TrackedCount}");
         ApplyToWindow(window);
         window.Closed += OnTrackedWindowClosed;
     }
@@ -165,7 +178,10 @@ public sealed class ThemeService
         }
 
         window.Closed -= OnTrackedWindowClosed;
-        _trackedWindows.Remove(window);
+        _trackedWindows.NotifyClosed(window);
+        App.LogVerbose(
+            $"[Theme] UntrackWindow {window.GetType().Name} " +
+            $"tracked={_trackedWindows.TrackedCount}");
     }
 
     /// <summary>
@@ -203,7 +219,8 @@ public sealed class ThemeService
     /// </summary>
     public void ApplyToAllWindows()
     {
-        foreach (var window in _trackedWindows)
+        EnsureUiThread(nameof(ApplyToAllWindows));
+        foreach (var window in _trackedWindows.EnumerateAlive())
         {
             ApplyToWindow(window);
         }
@@ -211,8 +228,17 @@ public sealed class ThemeService
 
     public void RefreshAppearance()
     {
+        App.LogVerbose($"[Theme] RefreshAppearance tracked={_trackedWindows.TrackedCount}");
         ApplyToAllWindows();
         AppearanceChanged?.Invoke();
         App.ScheduleLightMemoryCleanup();
+    }
+
+    private static void EnsureUiThread(string operation)
+    {
+        if (App.UiDispatcherQueue is { HasThreadAccess: false })
+        {
+            App.Log($"[Theme] {operation} invoked off the UI thread");
+        }
     }
 }

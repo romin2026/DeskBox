@@ -28,7 +28,7 @@ public sealed class SettingsSliceOwnershipContractTests
     [Fact]
     public void EverySlice_IsExposedAsGetOnlyAndJsonIgnored()
     {
-        Assert.Equal(12, SliceProperties.Length);
+        Assert.Equal(13, SliceProperties.Length);
         Assert.All(SliceProperties, p =>
         {
             Assert.False(p.CanWrite, $"{p.Name} must be get-only");
@@ -39,7 +39,7 @@ public sealed class SettingsSliceOwnershipContractTests
     [Fact]
     public void EveryFacadeProperty_MapsToExactlyOneSliceProperty()
     {
-        Assert.Equal(207, FacadeProperties.Length);
+        Assert.Equal(220, FacadeProperties.Length);
 
         foreach (PropertyInfo facade in FacadeProperties)
         {
@@ -162,6 +162,8 @@ public sealed class SettingsSliceOwnershipContractTests
             return 17;
         if (type == typeof(double))
             return 0.137;
+        if (type == typeof(long))
+            return 638000000000000000L;
         if (type == typeof(DateTimeOffset?))
             return new DateTimeOffset(2030, 1, 2, 3, 4, 5, TimeSpan.Zero);
         if (type.IsEnum)
@@ -233,7 +235,9 @@ public sealed class SettingsSliceOwnershipContractTests
         ["src/DeskBox/Services/AutoStartDefaultPolicy.cs"] = 1,
         ["src/DeskBox/Services/DataBackupSettingsPolicy.cs"] = 15,
         ["src/DeskBox/Services/DesktopAutoOrganizationWatcher.cs"] = 13,
-        ["src/DeskBox/Services/DesktopDoubleClickActivationService.cs"] = 4,
+        // 5 = legacy 4 + DesktopDoubleClickEnabled read backing the hook
+        // watchdog's HookProbeWanted gate (activation service line 122).
+        ["src/DeskBox/Services/DesktopDoubleClickActivationService.cs"] = 5,
         ["src/DeskBox/Services/DesktopOrganizationCoordinator.cs"] = 13,
         ["src/DeskBox/Services/DesktopOrganizationTransaction.Restore.cs"] = 3,
         ["src/DeskBox/Services/DesktopOrganizationTransaction.cs"] = 9,
@@ -266,10 +270,10 @@ public sealed class SettingsSliceOwnershipContractTests
         ["src/DeskBox/Services/WidgetForegroundSettings.cs"] = 8,
         ["src/DeskBox/Services/WidgetGroupMenuBuilder.cs"] = 1,
         ["src/DeskBox/Services/WidgetGroupSettings.cs"] = 19,
-        ["src/DeskBox/Services/WidgetManager.CapsuleArrangement.cs"] = 44,
-        ["src/DeskBox/Services/WidgetManager.FeatureWidgets.cs"] = 48,
+        ["src/DeskBox/Services/WidgetManager.CapsuleArrangement.cs"] = 45,
+        ["src/DeskBox/Services/WidgetManager.FeatureWidgets.cs"] = 50,
         ["src/DeskBox/Services/WidgetManager.Groups.cs"] = 57,
-        ["src/DeskBox/Services/WidgetManager.Storage.cs"] = 19,
+        ["src/DeskBox/Services/WidgetManager.Storage.cs"] = 20,
         ["src/DeskBox/Services/WidgetManager.Surfaces.cs"] = 1,
         ["src/DeskBox/Services/WidgetManager.TrayAnimation.cs"] = 3,
         ["src/DeskBox/Services/WidgetManager.cs"] = 27,
@@ -318,7 +322,7 @@ public sealed class SettingsSliceOwnershipContractTests
         ["src/DeskBox/ViewModels/WidgetViewModel.Operations.cs"] = 2,
         ["src/DeskBox/ViewModels/WidgetViewModel.Stacks.cs"] = 13,
         ["src/DeskBox/ViewModels/WidgetViewModel.cs"] = 7,
-        ["src/DeskBox/Views/ContentWidgetWindow.Commands.cs"] = 3,
+        ["src/DeskBox/Views/ContentWidgetWindow.Commands.cs"] = 4,
         ["src/DeskBox/Views/ContentWidgetWindow.File.cs"] = 1,
         ["src/DeskBox/Views/ContentWidgetWindow.NativeDragDrop.cs"] = 3,
         ["src/DeskBox/Views/ContentWidgetWindow.QuickCapture.cs"] = 1,
@@ -335,7 +339,7 @@ public sealed class SettingsSliceOwnershipContractTests
         ["src/DeskBox/Views/QuickCaptureWidgetWindow.Appearance.cs"] = 3,
         ["src/DeskBox/Views/QuickCaptureWidgetWindow.Detail.cs"] = 2,
         ["src/DeskBox/Views/QuickCaptureWidgetWindow.Editing.cs"] = 1,
-        ["src/DeskBox/Views/QuickCaptureWidgetWindow.Menus.cs"] = 1,
+        ["src/DeskBox/Views/QuickCaptureWidgetWindow.Menus.cs"] = 2,
         ["src/DeskBox/Views/QuickCaptureWidgetWindow.ResponsiveDetail.cs"] = 2,
         ["src/DeskBox/Views/QuickCaptureWidgetWindow.xaml.cs"] = 12,
         ["src/DeskBox/Views/SearchPopupWindow.xaml.cs"] = 22,

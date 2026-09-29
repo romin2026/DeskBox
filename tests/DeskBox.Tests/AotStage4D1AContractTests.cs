@@ -7,7 +7,7 @@ public sealed class AotStage4D1AContractTests
     [Fact]
     public void DispatcherQueueOptions_UsesGenericStaticSize()
     {
-        string source = ReadRepositoryFile("src/DeskBox/Helpers/Win32Helper.cs");
+        string source = ReadRepositoryFile("src/DeskBox/Platform/Win32Helper.cs");
 
         Assert.Contains(
             "Marshal.SizeOf<DispatcherQueueOptions>()",
@@ -59,7 +59,7 @@ public sealed class AotStage4D1AContractTests
     {
         string script = ReadRepositoryFile("scripts/publish-aot-audit.ps1");
 
-        Assert.Contains("$auditProfileVersion = 58", script, StringComparison.Ordinal);
+        Assert.Contains("$auditProfileVersion = 59", script, StringComparison.Ordinal);
         Assert.Contains("schemaVersion = 55", script, StringComparison.Ordinal);
         Assert.Contains("stage4D1AWarningMessages", script, StringComparison.Ordinal);
         Assert.Contains(

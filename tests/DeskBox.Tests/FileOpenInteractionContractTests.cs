@@ -121,7 +121,7 @@ public sealed class FileOpenInteractionContractTests
     public void UnassociatedItems_DeferToPickerAndKeepFailureToasts()
     {
         string win32Helper = File.ReadAllText(TestPaths.FromRepository(
-            "src/DeskBox/Helpers/Win32Helper.cs"));
+            "src/DeskBox/Platform/Win32Helper.cs"));
         string openItem = File.ReadAllText(TestPaths.FromRepository(
             "src/DeskBox/Services/FileService.OpenItem.cs"));
         string opening = File.ReadAllText(TestPaths.FromRepository(
@@ -162,6 +162,31 @@ public sealed class FileOpenInteractionContractTests
             openItem + File.ReadAllText(TestPaths.FromRepository(
                 "src/DeskBox/Services/FileService.cs")),
             StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ShellAssociationProbe_RequiresDefaultNotRecommendedHandler()
+    {
+        string win32Helper = File.ReadAllText(TestPaths.FromRepository(
+            "src/DeskBox/Platform/Win32Helper.cs"));
+
+        // A recommended handler only proves an app registered itself as
+        // capable for the extension — it is not the default. Treating it as
+        // one sends unassociated files back through shell dispatch, whose
+        // Open With picker reports a dismissal as a silent success.
+        Assert.DoesNotContain(
+            "SHAssocEnumHandlers",
+            win32Helper,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "RECOMMENDED",
+            win32Helper,
+            StringComparison.Ordinal);
+        // The effective-ProgId query fails outright when nothing is
+        // associated, so it proves a default exists; the verb check then
+        // covers packaged DelegateExecute-only defaults.
+        Assert.Contains("AssocstrProgId", win32Helper, StringComparison.Ordinal);
+        Assert.Contains("ProgIdHasOpenVerb", win32Helper, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -4,6 +4,7 @@ using System.Numerics;
 using DeskBox.Controls;
 using DeskBox.Helpers;
 using DeskBox.Models;
+using DeskBox.Platform;
 using DeskBox.Services;
 using DeskBox.ViewModels;
 using DeskBox.Views;
@@ -1834,9 +1835,7 @@ public sealed partial class FileSurfaceContent
     }
 
     private bool IsStackPopoverDarkTheme() =>
-        ActualTheme == ElementTheme.Dark ||
-        ActualTheme == ElementTheme.Default &&
-        Application.Current?.RequestedTheme == ApplicationTheme.Dark;
+        NeutralInteractionBrush.IsDarkTheme(this);
 
     private int _stackPopoverAppearanceSignature;
 

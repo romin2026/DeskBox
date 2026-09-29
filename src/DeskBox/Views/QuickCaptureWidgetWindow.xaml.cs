@@ -4,6 +4,7 @@ using DeskBox.Controls;
 using DeskBox.Contracts;
 using DeskBox.Helpers;
 using DeskBox.Models;
+using DeskBox.Platform;
 using DeskBox.Services;
 using DeskBox.ViewModels;
 using Microsoft.UI;
@@ -41,9 +42,6 @@ public sealed partial class QuickCaptureWidgetWindow :
 
     private const int MinWidth = (int)SettingsService.MinWidgetWidth;
     private const int MinHeight = (int)SettingsService.MinWidgetHeight;
-    private const int CopyToastMs = 900;
-    private const int StatusToastDefaultMs = 1400;
-    private const int StatusToastUndoMs = 4200;
     private const int ItemsViewTransitionMs = 280;
     private const int ItemsViewTransitionOffsetPx = 6;
     private const int DetailAutoSaveDelayMs = 600;

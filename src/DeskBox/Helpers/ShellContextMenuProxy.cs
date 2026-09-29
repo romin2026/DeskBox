@@ -1,6 +1,6 @@
+using DeskBox.Platform;
 using System.Diagnostics;
 using System.Globalization;
-using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.UI.Xaml;
 
@@ -590,7 +590,7 @@ internal static class ShellContextMenuProxy
     {
         try
         {
-            _ = AllowSetForegroundWindow(processId);
+            _ = Win32Helper.AllowSetForegroundWindow((uint)processId);
         }
         catch (Exception ex)
         {
@@ -598,10 +598,6 @@ internal static class ShellContextMenuProxy
                 $"[ShellContextMenuProxy] Foreground grant failed: {ex.Message}");
         }
     }
-
-    [DllImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool AllowSetForegroundWindow(int dwProcessId);
 
     private static string ResolveProxyExecutablePath() => Path.Combine(
         AppContext.BaseDirectory,

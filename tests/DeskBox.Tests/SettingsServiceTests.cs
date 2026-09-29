@@ -468,12 +468,18 @@ public sealed class SettingsServiceTests : IDisposable
 
         await service.SaveAsync(notifySubscribers: false);
         using JsonDocument saved = JsonDocument.Parse(await File.ReadAllTextAsync(settingsPath));
+        Assert.False(saved.RootElement.TryGetProperty("Widgets", out _));
+
+        // The adopted layout store is authoritative for the widgets key; its
+        // string-enum profile must round-trip the same names settings.json
+        // used to write.
+        using JsonDocument layout = JsonDocument.Parse(
+            await File.ReadAllTextAsync(Path.Combine(_settingsRoot, "widget-layout.json")));
         JsonElement savedWidget = Assert.Single(
-            saved.RootElement.GetProperty("widgets").EnumerateArray());
+            layout.RootElement.GetProperty("layout").GetProperty("widgets").EnumerateArray());
         Assert.Equal("File", savedWidget.GetProperty("widgetKind").GetString());
         Assert.Equal("List", savedWidget.GetProperty("viewMode").GetString());
         Assert.Equal("Manual", savedWidget.GetProperty("sortMode").GetString());
-        Assert.False(saved.RootElement.TryGetProperty("Widgets", out _));
     }
 
     [Fact]
@@ -1626,6 +1632,11 @@ public sealed class SettingsServiceTests : IDisposable
         if (type == typeof(double))
         {
             return (double)(defaultValue ?? 0d) + 0.137;
+        }
+
+        if (type == typeof(long))
+        {
+            return (long)(defaultValue ?? 0L) + 123456789012345L;
         }
 
         if (type == typeof(DateTimeOffset?))
