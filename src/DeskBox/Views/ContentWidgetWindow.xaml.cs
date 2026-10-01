@@ -632,9 +632,11 @@ public sealed partial class ContentWidgetWindow : WidgetWindowBase, IDesktopWidg
                 ContentWidgetShell.BackgroundSurface.Background,
                 surfaceColor);
         }
-        else if (WindowsCompatibilityService.UsesLegacyWindowAcrylic &&
+        else if (LegacyAccentBackdropActive &&
             SettingsService.IsAcrylicMaterial(materialType))
         {
+            // Legacy accent blur only: DesktopAcrylicController already owns the tint
+            // when controllerApplied=true (LegacyAccentBackdropActive=false).
             var overlayColor = WidgetMaterialVisualCalculator.BuildLegacyAcrylicSurfaceOverlayColor(
                 isDark,
                 accentColor,

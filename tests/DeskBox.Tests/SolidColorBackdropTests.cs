@@ -135,4 +135,55 @@ public sealed class SolidColorBackdropTests
         Assert.Contains("!IsSolidColorBackdropActive", quickCapture, StringComparison.Ordinal);
         Assert.DoesNotContain("ApplyTransparentAcrylicController", backdrop, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void ContentWidgetApplySurfaceStyle_GatesLegacyOverlayOnLegacyAccentBackdropActive()
+    {
+        string contentWindow = File.ReadAllText(TestPaths.FromRepository(
+            "src/DeskBox/Views/ContentWidgetWindow.xaml.cs"));
+        string stackPopover = File.ReadAllText(TestPaths.FromRepository(
+            "src/DeskBox/Controls/WidgetContents/FileSurfaceContent.StackPopover.cs"));
+
+        // Overlay must be gated on LegacyAccentBackdropActive (legacy accent path),
+        // not merely UsesLegacyWindowAcrylic - otherwise DesktopAcrylicController
+        // success still stacks a solid XAML tint on Win10.
+        Assert.Contains(
+            "else if (LegacyAccentBackdropActive",
+            contentWindow,
+            StringComparison.Ordinal);
+        int legacyGate = contentWindow.IndexOf(
+            "else if (LegacyAccentBackdropActive",
+            StringComparison.Ordinal);
+        int overlayCall = contentWindow.IndexOf(
+            "BuildLegacyAcrylicSurfaceOverlayColor",
+            legacyGate,
+            StringComparison.Ordinal);
+        Assert.True(overlayCall > legacyGate, "overlay build must sit inside LegacyAccentBackdropActive branch");
+        Assert.DoesNotContain(
+            "UsesLegacyWindowAcrylic &&",
+            contentWindow,
+            StringComparison.Ordinal);
+
+        // When material is supported, stack popover stays transparent (system backdrop owns look).
+        int method = stackPopover.IndexOf(
+            "private static SolidColorBrush CreateStackPopoverSurfaceBrush",
+            StringComparison.Ordinal);
+        Assert.True(method >= 0);
+        int nextMethod = stackPopover.IndexOf(
+            "private double ResolveStackPopoverCornerRadius",
+            method,
+            StringComparison.Ordinal);
+        string brushMethod = stackPopover.Substring(method, nextMethod - method);
+        Assert.Contains("if (materialSupported)", brushMethod, StringComparison.Ordinal);
+        Assert.Contains("FromArgb(0, 0, 0, 0)", brushMethod, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "BuildLegacyAcrylicSurfaceOverlayColor",
+            brushMethod,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "UsesLegacyWindowAcrylic",
+            brushMethod,
+            StringComparison.Ordinal);
+    }
+
 }

@@ -1787,22 +1787,10 @@ public sealed partial class FileSurfaceContent
         bool materialSupported = WidgetMaterialSystemBackdrop.IsSupported(
             appearance.MaterialType);
         Windows.UI.Color surfaceColor;
-        if (materialSupported &&
-            WindowsCompatibilityService.UsesLegacyWindowAcrylic &&
-            SettingsService.IsAcrylicMaterial(appearance.MaterialType))
+        if (materialSupported)
         {
-            surfaceColor =
-                WidgetMaterialVisualCalculator
-                    .BuildLegacyAcrylicSurfaceOverlayColor(
-                        appearance.IsDark,
-                        appearance.AccentColor,
-                        appearance.MaterialType ==
-                            SettingsService.WidgetMaterialTypeAcrylicBase,
-                        appearance.SurfaceOpacity,
-                        appearance.MaterialIntensity);
-        }
-        else if (materialSupported)
-        {
+            // System backdrop (DesktopAcrylic / Mica) owns the look; do not stack
+            // a Win10 legacy solid overlay on top when the controller succeeded.
             surfaceColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
         }
         else
