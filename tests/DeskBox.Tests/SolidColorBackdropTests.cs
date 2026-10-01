@@ -133,6 +133,16 @@ public sealed class SolidColorBackdropTests
         Assert.Contains("ClearSolidColorBackdrop();", baseWindow, StringComparison.Ordinal);
         Assert.Contains("!IsSolidColorBackdropActive", contentWindow, StringComparison.Ordinal);
         Assert.Contains("!IsSolidColorBackdropActive", quickCapture, StringComparison.Ordinal);
+        // Win10: Solid still paints XAML fill when TransparentTintBackdrop is active.
+        Assert.Contains("UsesLegacyWindowAcrylic", contentWindow, StringComparison.Ordinal);
+        Assert.Contains(
+            "(!IsSolidColorBackdropActive || WindowsCompatibilityService.UsesLegacyWindowAcrylic)",
+            contentWindow,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "(!IsSolidColorBackdropActive || WindowsCompatibilityService.UsesLegacyWindowAcrylic)",
+            quickCapture,
+            StringComparison.Ordinal);
         Assert.DoesNotContain("ApplyTransparentAcrylicController", backdrop, StringComparison.Ordinal);
     }
 

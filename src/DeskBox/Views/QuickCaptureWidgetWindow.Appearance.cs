@@ -96,8 +96,10 @@ public sealed partial class QuickCaptureWidgetWindow
             ?? AccentColorHelper.DefaultAccentColor;
         string materialType = _settingsService.Settings.WidgetMaterialType;
 
-        // Simplified layering: only apply surface color overlay for Solid mode.
-        if (materialType is SettingsService.WidgetMaterialTypeSolid && !IsSolidColorBackdropActive)
+        // Solid fill: on Win11 TransparentTintBackdrop owns the fill alone when active.
+        // On Win10 also paint the XAML surface when UsesLegacyWindowAcrylic.
+        if (materialType is SettingsService.WidgetMaterialTypeSolid &&
+            (!IsSolidColorBackdropActive || WindowsCompatibilityService.UsesLegacyWindowAcrylic))
         {
             var surfaceColor = BuildFrostedSurfaceColor(isDark, accentColor, surfaceOpacity);
             BackgroundPlate.Background = GetOrUpdateSolidColorBrush(BackgroundPlate.Background, surfaceColor);

@@ -621,8 +621,11 @@ public sealed partial class ContentWidgetWindow : WidgetWindowBase, IDesktopWidg
         string materialType = WindowsCompatibilityService.ResolveWidgetMaterialType(
             SettingsService.Settings.WidgetMaterialType);
 
-        // Simplified layering: only apply surface color overlay for Solid mode.
-        if (materialType is SettingsService.WidgetMaterialTypeSolid && !IsSolidColorBackdropActive)
+        // Solid fill: on Win11 TransparentTintBackdrop owns the fill alone when active.
+        // On Win10 the tint backdrop often does not visually fill, so also paint the
+        // XAML surface when UsesLegacyWindowAcrylic even if IsSolidColorBackdropActive.
+        if (materialType is SettingsService.WidgetMaterialTypeSolid &&
+            (!IsSolidColorBackdropActive || WindowsCompatibilityService.UsesLegacyWindowAcrylic))
         {
             var surfaceColor = WidgetMaterialVisualCalculator.BuildContentSolidSurfaceColor(
                 isDark,
