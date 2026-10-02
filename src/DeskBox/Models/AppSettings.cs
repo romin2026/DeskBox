@@ -8,6 +8,21 @@ namespace DeskBox.Models;
 /// properties below are the serialization facade and the legacy access
 /// surface. Declaration order here defines the on-disk member order.
 /// </summary>
+/// <remarks>
+/// Batch 51 adjudication (schema-equivalent narrowing): the 220 passthrough
+/// properties below are the frozen settings.json wire contract, not removable
+/// facade weight. Serializing slice members directly was evaluated and
+/// rejected — the flat member order interleaves all 13 slices, and the one
+/// legacy wire-attribute pair (<see cref="LegacyWidgetCapsuleModeEnabled"/>
+/// JsonPropertyName + WhenWritingNull) lives here — so no byte-equivalent
+/// path removes these properties. Adding or removing a passthrough is a
+/// disk-schema change and requires a schema-versioned migration; runtime code
+/// reads the slices (<c>Settings.&lt;Slice&gt;.&lt;Prop&gt;</c>) and the
+/// SettingsSliceOwnershipContractTests access ratchet keeps facade references
+/// shrinking toward that end state.
+/// Fork note: this type stays <c>partial</c> so AppearanceFacades / FeatureFacades
+/// can host the bulk passthroughs without duplicating them in this file.
+/// </remarks>
 public partial class AppSettings
 {
     /// <summary>
@@ -87,6 +102,9 @@ public partial class AppSettings
 
     /// <inheritdoc cref="CoreSettingsSlice.AutoStartMode"/>
     public StartupMode? AutoStartMode { get => Core.AutoStartMode; set => Core.AutoStartMode = value; }
+
+    /// <inheritdoc cref="CoreSettingsSlice.SilentStartup"/>
+    public bool SilentStartup { get => Core.SilentStartup; set => Core.SilentStartup = value; }
 
     /// <inheritdoc cref="PerformanceSettingsSlice.PerformanceMode"/>
     public string PerformanceMode { get => Performance.PerformanceMode; set => Performance.PerformanceMode = value; }

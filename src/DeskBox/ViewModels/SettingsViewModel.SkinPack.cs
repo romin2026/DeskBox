@@ -10,18 +10,18 @@ public partial class SettingsViewModel
 
     private bool _isApplyingSkinPack;
 
-    private bool _skinPackSaveHookInstalled;
+    private bool _skinPackHostHookInstalled;
 
     public string SelectedSkinId
     {
         get
         {
-            EnsureSkinPackSaveHook();
+            EnsureSkinPackHostHook();
             return SkinPackCatalog.NormalizeSelectedSkinId(_settingsService.Settings.SelectedSkinId);
         }
         set
         {
-            EnsureSkinPackSaveHook();
+            EnsureSkinPackHostHook();
             string normalized = SkinPackCatalog.NormalizeSelectedSkinId(value);
             string current = SkinPackCatalog.NormalizeSelectedSkinId(_settingsService.Settings.SelectedSkinId);
             if (string.Equals(current, normalized, StringComparison.Ordinal) &&
@@ -33,6 +33,7 @@ public partial class SettingsViewModel
             _selectedSkinId = normalized;
             OnPropertyChanged(nameof(SelectedSkinId));
             OnPropertyChanged(nameof(SelectedSkinIdText));
+            _appearanceSettings.UpdateSkinPackSelection(normalized);
 
             if (_isRestoringDefaults || _isApplyingSettingsSnapshot)
             {
@@ -53,49 +54,35 @@ public partial class SettingsViewModel
 
     public string SelectedSkinIdText => GetSkinPackDisplayName(SelectedSkinId);
 
-    private void EnsureSkinPackSaveHook()
+    private void EnsureSkinPackHostHook()
     {
-        if (_skinPackSaveHookInstalled)
+        if (_skinPackHostHookInstalled)
         {
             return;
         }
 
-        _skinPackSaveHookInstalled = true;
+        _skinPackHostHookInstalled = true;
         _selectedSkinId = SkinPackCatalog.NormalizeSelectedSkinId(_settingsService.Settings.SelectedSkinId);
-        PropertyChanged += OnSkinPackHostPropertyChanged;
+        _appearanceSettings.UpdateSkinPackSelection(_selectedSkinId);
+        // When the appearance editor commits user tweaks, re-match the active pack.
+        _appearanceSettings.AppearanceValueCommitted += OnAppearanceCommittedForSkinPack;
     }
 
-    private void OnSkinPackHostPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void OnAppearanceCommittedForSkinPack()
     {
         if (_isApplyingSkinPack || _isRestoringDefaults || _isApplyingSettingsSnapshot)
         {
             return;
         }
 
-        string? name = e.PropertyName;
-        if (string.IsNullOrEmpty(name) ||
-            name is nameof(SelectedSkinId) or nameof(SelectedSkinIdText) or nameof(AvailableSkinPackOptions))
-        {
-            return;
-        }
+        SyncSelectedSkinIdFromCurrentSettings();
+    }
 
-        if (name is nameof(SelectedTheme)
-            or nameof(SelectedTrayIconStyle)
-            or nameof(SelectedWidgetMaterialType)
-            or nameof(WidgetOpacity)
-            or nameof(WidgetMaterialIntensity)
-            or nameof(SelectedWidgetCornerPreference)
-            or nameof(SelectedWidgetBorderColorMode)
-            or nameof(SelectedWidgetBorderStyle)
-            or nameof(SelectedLayoutDensity)
-            or nameof(SelectedDisplayWidgetChromeMode)
-            or nameof(SelectedInteractiveWidgetChromeMode)
-            or nameof(UseSystemAccentColor)
-            or nameof(SelectedAccentColor)
-            or nameof(SelectedAccentColorSource))
-        {
-            SyncSelectedSkinIdFromCurrentSettings();
-        }
+    private void OnAppearanceSkinPackUserChanged(string skinId)
+    {
+        // Editor ComboBox wrote SelectedSkinId on the appearance VM; route through
+        // this shell property so ApplySkinPack / Custom persistence still runs.
+        SelectedSkinId = skinId;
     }
 
     private void ApplySkinPack(string skinId)
@@ -132,6 +119,10 @@ public partial class SettingsViewModel
             }
 
             App.Current?.UpdateTrayIcon();
+            PushAppearanceThemeSelection();
+            PushAppearanceAccentPresentation();
+            _appearanceSettings.SyncPresentation();
+            _appearanceSettings.UpdateSkinPackSelection(pack.Id);
             SaveAppearanceChange();
             OnPropertyChanged(nameof(SelectedSkinId));
             OnPropertyChanged(nameof(SelectedSkinIdText));
@@ -156,5 +147,13 @@ public partial class SettingsViewModel
         _settingsService.Settings.SelectedSkinId = matched;
         OnPropertyChanged(nameof(SelectedSkinId));
         OnPropertyChanged(nameof(SelectedSkinIdText));
+        _appearanceSettings.UpdateSkinPackSelection(matched);
+    }
+
+    private void PushAppearanceSkinPackSelection()
+    {
+        string skinId = SkinPackCatalog.NormalizeSelectedSkinId(_settingsService.Settings.SelectedSkinId);
+        _selectedSkinId = skinId;
+        _appearanceSettings.UpdateSkinPackSelection(skinId);
     }
 }

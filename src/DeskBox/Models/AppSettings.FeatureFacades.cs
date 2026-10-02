@@ -20,6 +20,15 @@ public partial class AppSettings
     /// <inheritdoc cref="FileWidgetSettingsSlice.ManagedDropAction"/>
     public string ManagedDropAction { get => FileWidget.ManagedDropAction; set => FileWidget.ManagedDropAction = value; }
 
+    /// <inheritdoc cref="FileWidgetSettingsSlice.ManagedDragOutAction"/>
+    public string ManagedDragOutAction { get => FileWidget.ManagedDragOutAction; set => FileWidget.ManagedDragOutAction = value; }
+
+    /// <inheritdoc cref="FileWidgetSettingsSlice.DragOutModifierTipEnabled"/>
+    public bool DragOutModifierTipEnabled { get => FileWidget.DragOutModifierTipEnabled; set => FileWidget.DragOutModifierTipEnabled = value; }
+
+    /// <inheritdoc cref="FileWidgetSettingsSlice.DragOutResultHintEnabled"/>
+    public bool DragOutResultHintEnabled { get => FileWidget.DragOutResultHintEnabled; set => FileWidget.DragOutResultHintEnabled = value; }
+
     /// <inheritdoc cref="FileWidgetSettingsSlice.DefaultManagedStorageRootPath"/>
     public string DefaultManagedStorageRootPath { get => FileWidget.DefaultManagedStorageRootPath; set => FileWidget.DefaultManagedStorageRootPath = value; }
 
@@ -49,6 +58,9 @@ public partial class AppSettings
 
     /// <inheritdoc cref="DesktopOrganizationSettingsSlice.DesktopAutoOrganizationEnabled"/>
     public bool DesktopAutoOrganizationEnabled { get => DesktopOrganization.DesktopAutoOrganizationEnabled; set => DesktopOrganization.DesktopAutoOrganizationEnabled = value; }
+
+    /// <inheritdoc cref="DesktopOrganizationSettingsSlice.DesktopAutoOrganizationDelaySeconds"/>
+    public int DesktopAutoOrganizationDelaySeconds { get => DesktopOrganization.DesktopAutoOrganizationDelaySeconds; set => DesktopOrganization.DesktopAutoOrganizationDelaySeconds = value; }
 
     /// <inheritdoc cref="DesktopOrganizationSettingsSlice.DesktopAutoOrganizationBaselineUtc"/>
     public DateTimeOffset? DesktopAutoOrganizationBaselineUtc { get => DesktopOrganization.DesktopAutoOrganizationBaselineUtc; set => DesktopOrganization.DesktopAutoOrganizationBaselineUtc = value; }

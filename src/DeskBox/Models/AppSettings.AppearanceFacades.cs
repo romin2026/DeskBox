@@ -92,6 +92,9 @@ public partial class AppSettings
     /// <inheritdoc cref="WidgetShellSettingsSlice.WidgetAnimationEasingIntensity"/>
     public string WidgetAnimationEasingIntensity { get => WidgetShell.WidgetAnimationEasingIntensity; set => WidgetShell.WidgetAnimationEasingIntensity = value; }
 
+    /// <inheritdoc cref="WidgetShellSettingsSlice.WidgetAnimationStaggerEnabled"/>
+    public bool WidgetAnimationStaggerEnabled { get => WidgetShell.WidgetAnimationStaggerEnabled; set => WidgetShell.WidgetAnimationStaggerEnabled = value; }
+
     /// <inheritdoc cref="WidgetShellSettingsSlice.WidgetLayerMode"/>
     public string WidgetLayerMode { get => WidgetShell.WidgetLayerMode; set => WidgetShell.WidgetLayerMode = value; }
 
