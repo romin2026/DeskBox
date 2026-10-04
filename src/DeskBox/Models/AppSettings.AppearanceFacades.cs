@@ -77,6 +77,29 @@ public partial class AppSettings
     /// <inheritdoc cref="WidgetShellSettingsSlice.WidgetBorderStyle"/>
     public string WidgetBorderStyle { get => WidgetShell.WidgetBorderStyle; set => WidgetShell.WidgetBorderStyle = value; }
 
+    /// <inheritdoc cref="WidgetShellSettingsSlice.WidgetBackgroundMode"/>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? WidgetBackgroundMode { get => WidgetShell.WidgetBackgroundMode; set => WidgetShell.WidgetBackgroundMode = value; }
+
+    /// <inheritdoc cref="WidgetShellSettingsSlice.WidgetBackgroundUnifiedImage"/>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? WidgetBackgroundUnifiedImage { get => WidgetShell.WidgetBackgroundUnifiedImage; set => WidgetShell.WidgetBackgroundUnifiedImage = value; }
+
+    /// <inheritdoc cref="WidgetShellSettingsSlice.WidgetBackgroundPanoramaImage"/>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? WidgetBackgroundPanoramaImage { get => WidgetShell.WidgetBackgroundPanoramaImage; set => WidgetShell.WidgetBackgroundPanoramaImage = value; }
+
+    /// <inheritdoc cref="WidgetShellSettingsSlice.WidgetBackgroundDim"/>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? WidgetBackgroundDim { get => WidgetShell.WidgetBackgroundDim; set => WidgetShell.WidgetBackgroundDim = value; }
+
+    /// <inheritdoc cref="WidgetShellSettingsSlice.WidgetBackgroundUnifiedFit"/>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? WidgetBackgroundUnifiedFit { get => WidgetShell.WidgetBackgroundUnifiedFit; set => WidgetShell.WidgetBackgroundUnifiedFit = value; }
+
+    /// <inheritdoc cref="WidgetShellSettingsSlice.WidgetTextShadowEnabled"/>
+    public bool WidgetTextShadowEnabled { get => WidgetShell.WidgetTextShadowEnabled; set => WidgetShell.WidgetTextShadowEnabled = value; }
+
     /// <inheritdoc cref="WidgetShellSettingsSlice.WidgetCornerPreference"/>
     public string WidgetCornerPreference { get => WidgetShell.WidgetCornerPreference; set => WidgetShell.WidgetCornerPreference = value; }
 

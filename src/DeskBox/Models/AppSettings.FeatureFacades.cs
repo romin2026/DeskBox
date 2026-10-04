@@ -156,6 +156,9 @@ public partial class AppSettings
     /// <inheritdoc cref="WeatherSettingsSlice.WeatherSkin"/>
     public string WeatherSkin { get => Weather.WeatherSkin; set => Weather.WeatherSkin = value; }
 
+    /// <inheritdoc cref="WeatherSettingsSlice.WeatherIconStyle"/>
+    public string WeatherIconStyle { get => Weather.WeatherIconStyle; set => Weather.WeatherIconStyle = value; }
+
     /// <inheritdoc cref="WeatherSettingsSlice.WeatherShowForecast"/>
     public bool WeatherShowForecast { get => Weather.WeatherShowForecast; set => Weather.WeatherShowForecast = value; }
 
