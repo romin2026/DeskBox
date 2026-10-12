@@ -151,7 +151,8 @@ public static class WidgetLayerService
     /// </summary>
     internal static bool RestoreGroupPreservingForeground(
         IReadOnlyList<IntPtr> windowHandles,
-        string reason)
+        string reason,
+        bool forceDesktopBottom = false)
     {
         List<IntPtr> handles = windowHandles
             .Where(handle => handle != IntPtr.Zero && Win32Helper.IsWindow(handle))
@@ -162,7 +163,11 @@ public static class WidgetLayerService
             return true;
         }
 
-        if (UsesDesktopPinnedMode())
+        // forceDesktopBottom: a desktop-band leak repair. The group is known to
+        // be resting (not raised); return it to the band bottom rather than
+        // merely behind the current foreground application.
+        if (UsesDesktopPinnedMode() ||
+            (forceDesktopBottom && ShouldAttachRestingWindowToDesktop()))
         {
             foreach (IntPtr handle in handles)
             {
@@ -1024,6 +1029,16 @@ public static class WidgetLayerService
             $"[WidgetLayer] no-activate style hwnd=0x{windowHandle.ToInt64():X} " +
             $"enabled={enabled}");
     }
+
+    /// <summary>
+    /// True when resting widgets are owned by the desktop icon view
+    /// (DesktopPinned, or Dynamic with keep-visible-on-Show-Desktop).
+    /// </summary>
+    internal static bool UsesDesktopBandAttachment() =>
+        ShouldAttachRestingWindowToDesktop();
+
+    internal static bool IsDesktopShellWindowOrOwnedByIt(IntPtr windowHandle) =>
+        windowHandle != IntPtr.Zero && IsDesktopShellWindow(windowHandle);
 
     private static bool ShouldAttachRestingWindowToDesktop()
     {

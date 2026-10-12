@@ -45,12 +45,10 @@ public sealed partial class WidgetManager
     // RestoreGroupPreservingForeground primitive — never a blind
     // SetWindowPos. The "already bedded" guard inside the re-bed makes it a
     // no-op transaction set when nothing is wrong.
-    private DispatcherQueueTimer? _desktopPinnedBeddingWatchdog;
-    private bool _desktopPinnedBeddingWatchdogArmed;
+    // Event-driven: the 5 s polling watchdog was replaced by out-of-context
+    // WinEvent hooks (see WidgetManager.DesktopBandEvents.cs).
     private BeddingLeakConfirmationPolicy.LeakTracking _beddingLeakTracking =
         BeddingLeakConfirmationPolicy.LeakTracking.Empty;
-    private static readonly TimeSpan DesktopPinnedBeddingWatchdogInterval =
-        TimeSpan.FromSeconds(5);
     private const int RequiredBeddingLeakConfirmations = 2;
 
     // ── 50ms mouse sampler (方案 B) ──
@@ -366,8 +364,8 @@ public sealed partial class WidgetManager
         // one-time watchdog arming here so pinned sessions are covered even
         // before the first file-open dispatch. Runs before the shadow gate:
         // a shadows-off system skips idle reorders but still needs the
-        // bedding watchdog.
-        EnsureDesktopPinnedBeddingWatchdogArmed();
+        // bedding event hooks.
+        EnsureDesktopBandEventHooksInstalled();
 
         // Idle normalization is shadow-protection work only; queueing it while
         // Windows drop shadows are off can only produce needless reorders.
@@ -400,64 +398,6 @@ public sealed partial class WidgetManager
     // ── Desktop-pinned global bedding self-heal (289/447/468) ──────────
 
     /// <summary>
-    /// Low-frequency watchdog. It only observes: a repair requires the same
-    /// leak pattern (a visible foreign application window below the pinned
-    /// group) across consecutive ticks, so transient activation states and
-    /// deliberate fullscreen/topmost arrangements never trigger it.
-    /// </summary>
-    private void EnsureDesktopPinnedBeddingWatchdogArmed()
-    {
-        if (_desktopPinnedBeddingWatchdogArmed)
-        {
-            return;
-        }
-
-        _desktopPinnedBeddingWatchdog ??= App.UiDispatcherQueue.CreateTimer();
-        _desktopPinnedBeddingWatchdog.Interval = DesktopPinnedBeddingWatchdogInterval;
-        _desktopPinnedBeddingWatchdog.Tick -= DesktopPinnedBeddingWatchdog_Tick;
-        _desktopPinnedBeddingWatchdog.Tick += DesktopPinnedBeddingWatchdog_Tick;
-        _desktopPinnedBeddingWatchdog.Start();
-        _desktopPinnedBeddingWatchdogArmed = true;
-        App.LogVerbose(
-            "[ZOrder] DesktopPinned bedding watchdog armed " +
-            $"intervalMs={(int)DesktopPinnedBeddingWatchdogInterval.TotalMilliseconds}");
-    }
-
-    private void DesktopPinnedBeddingWatchdog_Tick(
-        DispatcherQueueTimer sender,
-        object args)
-    {
-        if (App.IsShuttingDown)
-        {
-            return;
-        }
-
-        if (!WidgetLayerService.UsesDesktopPinnedMode() || !HasVisibleWidgets)
-        {
-            ResetBeddingLeakTracking();
-            return;
-        }
-
-        VerifyDesktopPinnedBedding("watchdog", requireConfirmation: true);
-    }
-
-    /// <summary>
-    /// Teardown counterpart of <see cref="EnsureDesktopPinnedBeddingWatchdogArmed"/>:
-    /// without this, a tick that lands while CloseAll is already closing windows
-    /// would re-bed and re-attach icon layers mid-shutdown.
-    /// </summary>
-    private void StopDesktopPinnedBeddingWatchdog()
-    {
-        if (_desktopPinnedBeddingWatchdog is { } timer)
-        {
-            timer.Stop();
-            timer.Tick -= DesktopPinnedBeddingWatchdog_Tick;
-        }
-
-        _desktopPinnedBeddingWatchdogArmed = false;
-    }
-
-    /// <summary>
     /// Event-driven recheck for a known leak window: after DeskBox dispatches
     /// a file open (the Explorer-hosted launch lifts the DefView owner band,
     /// #447/#468) or after a display-topology restore. Known leak points act
@@ -473,7 +413,7 @@ public sealed partial class WidgetManager
             return;
         }
 
-        EnsureDesktopPinnedBeddingWatchdogArmed();
+        EnsureDesktopBandEventHooksInstalled();
         // RunOrDefer instead of a bare dispatcher enqueue: the bare call
         // would NullReference before dispatcher-init.
         UiDispatch.RunOrDefer(async () =>
@@ -485,7 +425,12 @@ public sealed partial class WidgetManager
 
     private void VerifyDesktopPinnedBedding(string reason, bool requireConfirmation)
     {
-        if (!WidgetLayerService.UsesDesktopPinnedMode() ||
+        // Covers every mode whose resting widgets are owned by the desktop
+        // icon view (DesktopPinned, and Dynamic with "keep visible on Show
+        // Desktop"): both share the DefView owner band and both leak when
+        // Explorer raises that band for a desktop-owned dialog.
+        if (!WidgetLayerService.UsesDesktopBandAttachment() ||
+            !HasVisibleWidgets ||
             _widgetsRaisedFromTray ||
             _isTogglingWidgetsDesktopLayer ||
             _sessionManager.IsInteractionActive ||
@@ -558,9 +503,10 @@ public sealed partial class WidgetManager
         // transactions for genuinely displaced windows.
         bool applied = WidgetLayerService.RestoreGroupPreservingForeground(
             handles,
-            reason);
+            reason,
+            forceDesktopBottom: true);
         App.Log(
-            $"[ZOrder] DesktopPinned group re-bedded reason={reason} " +
+            $"[ZOrder] Desktop-band group re-bedded reason={reason} " +
             $"witness=0x{witness.ToInt64():X} count={handles.Count} applied={applied}");
     }
 

@@ -2537,7 +2537,7 @@ public sealed partial class WidgetManager
     {
         CancelAllWidgetSurfaceSwitches();
         StopTrayLayerRestoreMonitor();
-        StopDesktopPinnedBeddingWatchdog();
+        RemoveDesktopBandEventHooks();
         DisposeWidgetDetachPlacementPreview();
         _settingsService.SettingsChanged -= OnSettingsChanged;
         _settingsService.AppearancePreviewChanged -= ApplyAppearancePreview;
